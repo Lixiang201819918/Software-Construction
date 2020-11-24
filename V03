@@ -1,0 +1,122 @@
+package version3;
+/*
+ * 新增要求
+ * 1）每个算式还需要答案；（新增）————————————V02已经实现
+ * 2）加法算式的和不能超过100；（隐含）
+ * 3）减法算式的差不能小于0；（隐含）———需求2和3   新建一个算式合法性判断模块  用来判断是否满足放入习题集的条件 
+ * 4）每行整齐地多显示几个算式。（更改）  ——————在输出算式模块中进行更改
+ */
+import java.util.Random;
+
+public class V03 {
+	public static void main(String[] args) {
+		int max_Value = 100;    //定义操作数的范围   此处表示100以内的算式
+		int equ_Num = 50;     //定义生成算式的数量
+		int line_Num = 5;    // 定义每行输出几个算式
+		int[][] exercises = new int [equ_Num][3];    //定义用来存放算式的数组   采用二维数组来实现
+		exercises = generateExerciseOfAdditionEquations(equ_Num, max_Value);  //产生习题
+		printExercises(exercises,line_Num);  //打印习题
+		printAnswersOfExercises(exercises);   //打印答案
+	}
+	//获得操作数 0-max 
+	public static int generateAnOperand(int max) {
+		Random random = new Random();
+		return random.nextInt(max + 1);
+	}
+	//获得操作数  返回 0 或 1
+	public static int generateAnOperater() {
+		Random random = new Random();
+		return random.nextInt(2);
+	}
+	//产生一个加法算式   返回一个一维数组 e[] 
+	public static int[] generateAnAddEquation(int max_Value) {
+		int e[] = new int[] { 0 , 0 , 0 };  // e[0] 左操作数  e[1] 右操作数 e[2] 操作符
+		int left_Operand = 0;
+		int right_Operand = 0;
+		int ov = 0;   //操作数   0表示加法   1表示减法
+		 //加入习题集前首先判断算式合法性
+		do {
+			left_Operand = generateAnOperand(max_Value + 1);
+			right_Operand = generateAnOperand(max_Value + 1);
+			e[0] = left_Operand;
+			e[1] = right_Operand;
+			e[2] = ov;
+		}while(!validityOfFormula(e));
+		return e;
+	}
+	//产生一个减法算式   返回一个一维数组 e[] 
+	public static int[] generateAnSubEquation(int max_Value) {
+		int e[] = new int[] { 0 , 0 , 0 };  // e[0] 左操作数  e[1] 右操作数 e[2] 操作符
+		int left_Operand = 0;
+		int right_Operand = 0;
+		int ov = 1;   //操作数   0表示加法   1表示减法
+		 //加入习题集前首先判断算式合法性
+		do {
+			left_Operand = generateAnOperand(max_Value + 1);
+			right_Operand = generateAnOperand(max_Value + 1);
+//		}while((left_Operand - right_Operand) < 0);
+			e[0] = left_Operand;
+			e[1] = right_Operand;
+			e[2] = ov;
+		}while(!validityOfFormula(e));
+		return e;
+	}
+	//判断算式合法性————是否可以加入到习题集当中
+	public static boolean validityOfFormula(int[] e) {
+		boolean flag = false;
+		if(e[2] == 0) {
+			if((e[0] + e[1]) <= 100) {
+				flag = true;
+				return flag;
+			}
+		}
+		if(e[2] == 1) {
+			if((e[0] - e[1]) >= 0) {
+				flag = true;
+				return flag;
+			}
+		}
+		return flag;
+	}
+	//产生习题集  传入参数有：  生成题目数量num  操作数的范围max_value
+	public static int[][] generateExerciseOfAdditionEquations(int num,int max_Value){
+		int[] e = new int[3];  //存放一个算式
+		int ov = 0;  //定义一个操作符
+		int[][] exercises = new int[num][];
+		//循环产生数目为num的加减法算式 
+		for(int i = 0 ; i < num ; i++) {
+			ov = generateAnOperater();
+			if(ov == 0) {
+				e = generateAnAddEquation(max_Value);
+			}else {
+				e = generateAnSubEquation(max_Value);
+			}
+			exercises[i] = e;
+		}
+		return exercises;
+	}
+	//打印习题
+	public static void printExercises(int[][] exercises,int line_Num) {
+		for(int i = 0; i < exercises.length; i++) {
+			if(exercises[i][2] == 0) {
+			 	System.out.print((i+1) + "：" + exercises[i][0] + " + " + exercises[i][1] + "= \t");
+			}else {
+			 	System.out.print((i+1) + "：" + exercises[i][0] + " - " + exercises[i][1] + "= \t");
+			}
+			if((i+1) % line_Num == 0) {
+				System.out.println();
+			}
+		}
+	}
+	//打印习题答案
+	public static void printAnswersOfExercises(int[][] exercises) {
+		System.out.println("习题答案如下：");
+		for(int i = 0; i < exercises.length; i++) {
+			if(exercises[i][2] == 0) {
+			 	System.out.println("第" + (i+1) + "题答案：" + (exercises[i][0] +  exercises[i][1]));
+			}else {
+			 	System.out.println("第" + (i+1) + "题答案：" + (exercises[i][0] - exercises[i][1]));
+			}
+		}
+	}
+}
