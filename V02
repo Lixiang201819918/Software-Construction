@@ -1,0 +1,93 @@
+package version2;
+
+import java.util.Random;
+
+/*
+ * 模块化构造
+ * 随机产生随机数有一个单独的方法来实现
+ * 用数组来表示一个算式 e[]     e[0] 左操作数  e[1] 右操作数 e[2] 操作符
+ */
+public class V02 {
+	public static void main(String[] args) {
+		int max_Value = 100;
+		int num = 50;
+		int[][] exercises = new int [num][3];
+		exercises = generateExerciseOfAdditionEquations(num, max_Value);
+		printExercises(exercises);
+		printAnswersOfExercises(exercises);
+	}
+	//获得操作数 0-max 
+	public static int generateAnOperand(int max) {
+		Random random = new Random();
+		return random.nextInt(max + 1);
+	}
+	//获得操作数  返回 0 或 1
+	public static int generateAnOperater() {
+		Random random = new Random();
+		return random.nextInt(2);
+	}
+	//产生一个加法算式   返回一个一维数组 e[] 
+	public static int[] generateAnAddEquation(int max_Value) {
+		int e[] = new int[] { 0 , 0 , 0 };  // e[0] 左操作数  e[1] 右操作数 e[2] 操作符
+		int left_Operand = 0;
+		int right_Operand = 0;
+		int ov = 0;   //操作数   0表示加法   1表示减法
+		left_Operand = generateAnOperand(max_Value);
+		right_Operand = generateAnOperand(max_Value);
+		e[0] = left_Operand;
+		e[1] = right_Operand;
+		e[2] = ov;
+		return e;
+	}
+	//产生一个减法算式   返回一个一维数组 e[] 
+	public static int[] generateAnSubEquation(int max_Value) {
+		int e[] = new int[] { 0 , 0 , 0 };  // e[0] 左操作数  e[1] 右操作数 e[2] 操作符
+		int left_Operand = 0;
+		int right_Operand = 0;
+		int ov = 1;   //操作数   0表示加法   1表示减法
+		left_Operand = generateAnOperand(max_Value);
+		right_Operand = generateAnOperand(max_Value);
+		e[0] = left_Operand;
+		e[1] = right_Operand;
+		e[2] = ov;
+		return e;
+	}
+	//产生习题集  传入参数有：  生成题目数量num  操作数的范围max_value
+	public static int[][] generateExerciseOfAdditionEquations(int num,int max_Value){
+		int[] e = new int[3];  //存放一个算式
+		int ov = 0;  //定义一个操作符
+		int[][] exercises = new int[num][3];
+		//循环产生数目为num的加减法算式 
+		for(int i = 0 ; i < num ; i++) {
+			ov = generateAnOperater();
+			if(ov == 0) {    //0表示加法   1表示减法
+ 				e = generateAnAddEquation(max_Value);
+			}else {
+				e = generateAnSubEquation(max_Value);
+			}
+			exercises[i] = e;
+		}
+		return exercises;
+	}
+	//打印习题
+	public static void printExercises(int[][] exercises) {
+		for(int i = 0; i < exercises.length; i++) {
+			if(exercises[i][2] == 1) {
+			 	System.out.println("第" + (i+1) + "题：" + exercises[i][0] + " + " + exercises[i][1] + "=\t");
+			}else {
+			 	System.out.println("第" + (i+1) + "题：" + exercises[i][0] + " - " + exercises[i][1] + "=\t");
+			}
+		}
+	}
+	//打印习题答案
+	public static void printAnswersOfExercises(int[][] exercises) {
+		System.out.println("习题答案如下：");
+		for(int i = 0; i < exercises.length; i++) {
+			if(exercises[i][2] == 1) {
+			 	System.out.println("第" + (i+1) + "题答案：" + (exercises[i][0] +  exercises[i][1]));
+			}else {
+			 	System.out.println("第" + (i+1) + "题答案：" + (exercises[i][0] - exercises[i][1]));
+			}
+		}
+	}
+}
